@@ -6,59 +6,105 @@ namespace Robot
     {
         public static void Main(string[] args)
         {
-            int n = int.Parse(Console.ReadLine());
-            int[,] f = new int[n, 2];
-            int c = 0;
-            int x = 0;
-            int y = 0;
-            int d = 0;
-            int[] dx = new int[] { 0, 1, 0, -1 };
-            int[] dy = new int[] { 1, 0, -1, 0 };
+            int itemsCount = ReadItemsCount();
+            int[,] itemsMap = new int[itemsCount, 2];
 
-            for (int i = 0; i < n; i++)
+            ConfigureItems(itemsCount, itemsMap);
+
+            int itemsCollectedCount = CollectItems(itemsCount, itemsMap);
+
+            PrintResult(itemsCollectedCount);
+        }
+
+        private static int CollectItems(int itemsCount, int[,] itemsMap)
+        {
+            int itemsCollectedCount = 0;
+            int RobotXCoord = 0;
+            int RobotYCoord = 0;
+            int direction = 0;
+            int[] directionMapX = new int[] { 0, 1, 0, -1 };
+            int[] directionMapY = new int[] { 1, 0, -1, 0 };
+
+            foreach (var command in GetRobotCommands())
             {
-                var l = Console.ReadLine().Split(' ');
-                f[i, 0] = int.Parse(l[0]);
-                f[i, 1] = int.Parse(l[1]);
-            }
-
-
-            foreach (var chr in Console.ReadLine())
-            {
-                if (chr == 'L')
+                if (HandleRobotCommand(command, directionMapX, directionMapY, ref direction, ref RobotXCoord, ref RobotYCoord))
                 {
-                    d = (d + 3) % 4;
                     continue;
                 }
-                if (chr == 'R')
-                {
-                    d = (d + 1) % 4;
-                    continue;
-                }
-                if (chr == 'F')
-                {
-                    x += dx[d];
-                    y += dy[d];
 
-                }
-                if (chr == 'B')
-                {
-                    x -= dx[d];
-                    y -= dy[d];
-                }
+                itemsCollectedCount += CheckItemPresence(itemsCount, itemsMap, RobotXCoord, RobotYCoord);
+            }
 
-                for (int i = 0; i < n; i++)
+            return itemsCollectedCount;
+        }
+
+        private static int CheckItemPresence(int itemsCount, int[,] itemsMap, int RobotXCoord, int RobotYCoord)
+        {
+            for (int i = 0; i < itemsCount; i++)
+            {
+                if (itemsMap[i, 0] == RobotXCoord && itemsMap[i, 1] == RobotYCoord)
                 {
-                    if (f[i, 0] == x && f[i, 1] == y)
-                    {
-                        c++;
-                        f[i, 0] = int.MaxValue;
-                        f[i, 1] = int.MaxValue;
-                    }
+                    itemsMap[i, 0] = int.MaxValue;
+                    itemsMap[i, 1] = int.MaxValue;
+
+                    return 1;
                 }
             }
-            
-            Console.Out.WriteLine(c);
+
+            return 0;
+        }
+
+        private static bool HandleRobotCommand(char command, int[] directionMapX, int[] directionMapY, ref int direction, ref int RobotXCoord, ref int RobotYCoord)
+        {
+            switch (command)
+            {
+                case 'L':
+                    direction = (direction + 3) % 4;
+                    return true;
+                case 'R':
+                    direction = (direction + 1) % 4;
+                    return true;
+                case 'F':
+                    RobotXCoord += directionMapX[direction];
+                    RobotYCoord += directionMapY[direction];
+                    break;
+                case 'B':
+                    RobotXCoord -= directionMapX[direction];
+                    RobotYCoord -= directionMapY[direction];
+                    break;
+            }
+
+            return false;
+        }
+
+        private static void ConfigureItems(int itemsCount, int[,] itemsMap)
+        {
+            for (int i = 0; i < itemsCount; i++)
+            {
+                var l = GetitemCoordinates();
+                itemsMap[i, 0] = int.Parse(l[0]);
+                itemsMap[i, 1] = int.Parse(l[1]);
+            }
+        }
+
+        private static string GetRobotCommands()
+        {
+            return Console.ReadLine();
+        }
+
+        private static string[] GetitemCoordinates()
+        {
+            return Console.ReadLine().Split(' ');
+        }
+
+        private static void PrintResult(int itemsCollectedCount)
+        {
+            Console.Out.WriteLine(itemsCollectedCount);
+        }
+
+        private static int ReadItemsCount()
+        {
+            return int.Parse(Console.ReadLine());
         }
     }
 }
