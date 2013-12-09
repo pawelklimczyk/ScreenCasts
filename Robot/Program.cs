@@ -7,16 +7,16 @@ namespace Robot
         public static void Main(string[] args)
         {
             int itemsCount = ReadItemsCount();
-            int[,] itemsMap = new int[itemsCount, 2];
+            Map map = new Map();
 
-            ConfigureItems(itemsCount, itemsMap);
+            ConfigureItems(itemsCount, map);
 
-            int itemsCollectedCount = CollectItems(itemsCount, itemsMap);
+            int itemsCollectedCount = CollectItems(itemsCount, map);
 
             PrintResult(itemsCollectedCount);
         }
 
-        private static int CollectItems(int itemsCount, int[,] itemsMap)
+        private static int CollectItems(int itemsCount, Map map)
         {
             int itemsCollectedCount = 0;
             int RobotXCoord = 0;
@@ -32,20 +32,19 @@ namespace Robot
                     continue;
                 }
 
-                itemsCollectedCount += CheckItemPresence(itemsCount, itemsMap, RobotXCoord, RobotYCoord);
+                itemsCollectedCount += CheckItemPresence(itemsCount, map, RobotXCoord, RobotYCoord);
             }
 
             return itemsCollectedCount;
         }
 
-        private static int CheckItemPresence(int itemsCount, int[,] itemsMap, int RobotXCoord, int RobotYCoord)
+        private static int CheckItemPresence(int itemsCount, Map map, int RobotXCoord, int RobotYCoord)
         {
             for (int i = 0; i < itemsCount; i++)
             {
-                if (itemsMap[i, 0] == RobotXCoord && itemsMap[i, 1] == RobotYCoord)
+                if (map.HasItemAtCoords(RobotXCoord, RobotYCoord))
                 {
-                    itemsMap[i, 0] = int.MaxValue;
-                    itemsMap[i, 1] = int.MaxValue;
+		    map.RemoveItem(RobotXCoord, RobotYCoord);
 
                     return 1;
                 }
@@ -77,13 +76,12 @@ namespace Robot
             return false;
         }
 
-        private static void ConfigureItems(int itemsCount, int[,] itemsMap)
+        private static void ConfigureItems(int itemsCount, Map map)
         {
             for (int i = 0; i < itemsCount; i++)
             {
-                var l = GetitemCoordinates();
-                itemsMap[i, 0] = int.Parse(l[0]);
-                itemsMap[i, 1] = int.Parse(l[1]);
+                var coordinates = GetItemCoordinates();
+                map.AddItem(int.Parse(coordinates[0]), int.Parse(coordinates[1]));
             }
         }
 
@@ -92,7 +90,7 @@ namespace Robot
             return Console.ReadLine();
         }
 
-        private static string[] GetitemCoordinates()
+        private static string[] GetItemCoordinates()
         {
             return Console.ReadLine().Split(' ');
         }
