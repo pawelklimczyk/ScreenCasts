@@ -4,7 +4,7 @@
 // </copyright>
 // -------------------------------------------------------------------------------------------------------------------
 
-namespace Robot.Tests
+namespace RobotProgram.Tests
 {
     using NUnit.Framework;
 

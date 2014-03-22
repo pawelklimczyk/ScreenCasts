@@ -4,7 +4,7 @@
 // </copyright>
 // -------------------------------------------------------------------------------------------------------------------
 
-namespace Robot
+namespace RobotProgram
 {
     using System;
     using System.Collections.Generic;

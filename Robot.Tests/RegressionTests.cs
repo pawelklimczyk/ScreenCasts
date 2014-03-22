@@ -4,7 +4,7 @@
 // </copyright>
 // -------------------------------------------------------------------------------------------------------------------
 
-namespace Robot.Tests
+namespace RobotProgram.Tests
 {
     using System;
     using System.IO;
@@ -29,7 +29,9 @@ BRB", @"3
 3 3
 FRFFLFFRF", @"1
 1 1
-FRFBF")] string consoleInput, [Values("1\r\n", "1\r\n", "1\r\n", "3\r\n", "1\r\n")] string expectedValue)
+FRFBF", @"1
+1 1
+LLBRB")] string consoleInput, [Values("1\r\n", "1\r\n", "1\r\n", "3\r\n", "1\r\n", "1\r\n")] string expectedValue)
         {
             //arrange
             StringBuilder builder = new StringBuilder();
